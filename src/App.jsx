@@ -1,35 +1,35 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import React, { useState, useEffect } from "react";
+import "./App.css";
+import MovieDisplay from "./components/MovieDisplay";
+import Form from "./components/Form";
 
-function App() {
-  const [count, setCount] = useState(0)
+export default function App() {
+  const apiKey = "YOUR_API_KEY"; // Replace with your actual API key
+  const [movie, setMovie] = useState(null);
+
+  const getMovie = async (searchTerm) => {
+    try {
+      const response = await fetch(
+        `https://www.omdbapi.com/?apikey=${98e3fb1f}&t=${searchTerm}`
+      );
+      const data = await response.json();
+      setMovie(data);
+    } catch (error) {
+      console.error(error);
+      // Handle the error here and provide user feedback
+      setMovie(null);
+    }
+  };
+
+  useEffect(() => {
+    // Initial movie load
+    getMovie("Clueless");
+  }, []);
 
   return (
-    <>
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
+    <div className="App">
+      <Form moviesearch={getMovie} />
+      {movie ? <MovieDisplay movie={movie} /> : <h1>No Movie to Display</h1>}
+    </div>
+  );
 }
-
-export default App
